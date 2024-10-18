@@ -10353,6 +10353,78 @@ ul {
 
 /* -------------------- */
 
+
+/*--------------------------------------------------------------
+# Register form
+--------------------------------------------------------------*/
+
+/* styles.css */
+
+.reg-form-main {
+  font-family: Arial, sans-serif;
+    background-color: #222;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+}
+
+.reg-form-container {
+  background-color: #333;
+  border: 1px solid #555;
+  border-radius: 10px;
+  padding: 30px;
+  /* max-width: 400px; */
+  width: 100%;
+  
+}
+
+.reg-form input, 
+.reg-form select, 
+.reg-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background-color: #444;
+  color: white;
+}
+
+.reg-form input[type="radio"], 
+.reg-form input[type="checkbox"] {
+  width: auto;
+}
+
+.reg-form label {
+  margin: 5px 0;
+  color: #ddd;
+}
+
+.reg-form h2 {
+  color: purple;
+}
+
+.reg-form button {
+  background-color: purple;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reg-form button:hover {
+  background-color: black;
+  color: purple;
+}
+
+
+/* ------------- */
+
 /*--------------------------------------------------------------
 # End
 --------------------------------------------------------------*/

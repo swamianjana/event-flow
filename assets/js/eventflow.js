@@ -227,6 +227,7 @@
     // debugger
     populateFaq(faq)
     populateCohort(registerForms);
+    populateForm(registerForms);
 
   }
 
@@ -264,49 +265,120 @@
         faqDiv.append(accordionHTML);
       }
 
-        // Accrodion
-  if ($(".accrodion-grp").length) {
-    var accrodionGrp = $(".accrodion-grp");
-    accrodionGrp.each(function () {
-      var accrodionName = $(this).data("grp-name");
-      var Self = $(this);
-      var accordion = Self.find(".accrodion");
-      Self.addClass(accrodionName);
-      Self.find(".accrodion .accrodion-content").hide();
-      Self.find(".accrodion.active").find(".accrodion-content").show();
-      accordion.each(function () {
-        $(this)
-          .find(".accrodion-title")
-          .on("click", function () {
-            if ($(this).parent().hasClass("active") === false) {
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .removeClass("active");
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .find(".accrodion-content")
-                .slideUp();
-              $(this).parent().addClass("active");
-              $(this).parent().find(".accrodion-content").slideDown();
-            }
+      // Accrodion
+      if ($(".accrodion-grp").length) {
+        var accrodionGrp = $(".accrodion-grp");
+        accrodionGrp.each(function () {
+          var accrodionName = $(this).data("grp-name");
+          var Self = $(this);
+          var accordion = Self.find(".accrodion");
+          Self.addClass(accrodionName);
+          Self.find(".accrodion .accrodion-content").hide();
+          Self.find(".accrodion.active").find(".accrodion-content").show();
+          accordion.each(function () {
+            $(this)
+              .find(".accrodion-title")
+              .on("click", function () {
+                if ($(this).parent().hasClass("active") === false) {
+                  $(".accrodion-grp." + accrodionName)
+                    .find(".accrodion")
+                    .removeClass("active");
+                  $(".accrodion-grp." + accrodionName)
+                    .find(".accrodion")
+                    .find(".accrodion-content")
+                    .slideUp();
+                  $(this).parent().addClass("active");
+                  $(this).parent().find(".accrodion-content").slideDown();
+                }
+              });
           });
-      });
-    });
-  }
+        });
+      }
     }
   }
 
-  function populateCohort(registerForm){
-    if($(".cohort-dropdown-content").length) {
+  function populateCohort(registerForm) {
+    if ($(".cohort-dropdown-content").length) {
       let cohortDiv = $(".cohort-dropdown-content");
       Object.keys(registerForm).forEach(cohort => {
-          let cohortOption =  `<a class="thm-btn" href="register.html?id=${cohort}" data-value="${cohort}">${cohort}</a>`;
-          cohortDiv.append(cohortOption)
+        let cohortOption = `<a class="thm-btn" href="register.html?id=${cohort}" data-value="${cohort}">${cohort}</a>`;
+        cohortDiv.append(cohortOption)
       });
     }
   }
-  
 
+  function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function populateForm(registerForm) {
+    const id = getQueryParameter('id');
+    const $form = $('#dynamic-form');
+    $(".reg-header").append(id);
+    $form.empty(); // Clear previous fields
+    if (id) {
+      registerForm[id].forEach(field => {
+        if (field.isActive == true) {
+          let fieldHtml = '';
+
+          // Section header
+          // if (field.sectionHeader) {
+          //   // fieldHtml += `<h2 class="reg-section-header">${field.sectionHeader}</h2>`;
+          // }
+
+          // Label
+          fieldHtml += `<label for="${field.name}" class="reg-label">${field.label}</label>`;
+
+          // Generate input based on field kind
+          if (field.kind === "TEXT") {
+            fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input">`;
+          } else if (field.kind === "EMAIL") {
+            fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input">`;
+          } else if (field.kind === "RADIO") {
+            field.defaultValue.forEach(option => {
+              fieldHtml += `
+                              <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio">
+                              <label for="${option.value}" class="reg-label-inline">${option.label}</label>
+                          `;
+            });
+          } else if (field.kind === "DATE") {
+            fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input">`;
+          }
+
+          // Append the generated HTML to the form
+          $form.append(fieldHtml);
+        }
+      });
+      $form.append('<button type="submit" class="reg-button">Submit</button>');
+
+      // Add a submit button
+    }
+
+    $('#dynamic-form').on('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const formData = {};
+      
+      // Collect all input values dynamically
+      $('#dynamic-form').find('input, select, textarea').each(function () {
+          const $input = $(this);
+          const name = $input.attr('name');
+          const value = $input.val();
+
+          // Handle radio buttons: only add the checked ones
+          if ($input.attr('type') === 'radio') {
+              if ($input.is(':checked')) {
+                  formData[name] = value;
+              }
+          } else {
+              formData[name] = value;
+          }
+      });
+      console.log('Collected form data:', formData);
+      alert('Data saved successfully!');
+    });
+  }
 
   // Popular Causes Progress Bar
   if ($(".count-bar").length) {
