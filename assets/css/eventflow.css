@@ -10285,8 +10285,73 @@ ul {
 }
 
 
+/*--------------------------------------------------------------
+# cohort css
+--------------------------------------------------------------*/
+
+.hidden {
+  display: none; /* Hide the button initially */
+}
+
+/* Existing CSS styles */
+.dropdown-container {
+  display: flex;
+  flex-direction: column; /* Allow vertical stacking */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 300px;
+  /* justify-content: space-between; */
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn:hover {
+  background-color: linear-gradient(90deg, #4A0AB4 0%, #B20D5D 100%); /* Lighter purple on hover */
+}
+
+.cohort-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: linear-gradient(90deg, #4A0AB4 0%, #B20D5D 100%); /* Dark purple */
+  min-width: 160px;
+  /* justify-content: space-between; */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.cohort-dropdown-content a {
+  color: white; /* White text for dropdown items */
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.cohort-dropdown-content a:hover {
+  background-color: linear-gradient(90deg, #4A0AB4 0%, #B20D5D 100%); /* Lighter purple on hover */
+}
+
+.dropdown:hover .cohort-dropdown-content {
+  display: block;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 600px) {
+  .dropbtn {
+      width: 100%;
+  }
+
+  .cohort-dropdown-content {
+      min-width: 100%;
+  }
+}
 
 
+/* -------------------- */
 
 /*--------------------------------------------------------------
 # End

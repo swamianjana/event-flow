@@ -119,14 +119,14 @@
 
   // Main function to orchestrate login and event data fetching
   async function getEventData(email, password, eventId) {
-    if(eventFlowData) {
+    if (eventFlowData) {
       return eventFlowData;
     }
     let accessToken = await login(email, password);
 
     if (accessToken) {
       eventFlowData = await fetchEventData(accessToken, eventId);
-      
+
     } else {
       console.log('Unable to fetch event data due to failed login');
     }
@@ -141,93 +141,171 @@
   // var eventflowData ={};
 
   // Function to handle login and return the access token
-// function login(email, password) {
-//   return $.ajax({
-//     url: "https://sit.spicetrade.io/api/auth/login",
-//     method: 'POST',
-//     contentType: 'application/json',
-//     data: JSON.stringify({
-//       "email": email,
-//       "password": password
-//     }),
-//   }).done(function(result) {
-//     if (result.data && result.data.accessToken) {
-//       console.log("Login successful, access token:", result.data.accessToken);
-//       return result.data.accessToken; // Return the access token
-//     } else {
-//       console.log('Login failed:', result.message);
-//       return null;
-//     }
-//   }).fail(function(jqXHR, textStatus, errorThrown) {
-//     console.log('Error logging in:', textStatus, errorThrown);
-//     return null;
-//   });
-// }
+  // function login(email, password) {
+  //   return $.ajax({
+  //     url: "https://sit.spicetrade.io/api/auth/login",
+  //     method: 'POST',
+  //     contentType: 'application/json',
+  //     data: JSON.stringify({
+  //       "email": email,
+  //       "password": password
+  //     }),
+  //   }).done(function(result) {
+  //     if (result.data && result.data.accessToken) {
+  //       console.log("Login successful, access token:", result.data.accessToken);
+  //       return result.data.accessToken; // Return the access token
+  //     } else {
+  //       console.log('Login failed:', result.message);
+  //       return null;
+  //     }
+  //   }).fail(function(jqXHR, textStatus, errorThrown) {
+  //     console.log('Error logging in:', textStatus, errorThrown);
+  //     return null;
+  //   });
+  // }
 
-// // Function to fetch event data using the access token
-// function fetchEventData(accessToken, eventId) {
-//   return $.ajax({
-//     url: `https://sit.spicetrade.io/api/event?id=${eventId}`,
-//     method: 'GET',
-//     headers: {
-//       'Authorization': `Bearer ${accessToken}`
-//     }
-//   }).done(function(eventResult) {
-//     console.log("Event data:", eventResult);
-//     eventflowData = eventResult;
-//     return eventResult;
-//   }).fail(function(jqXHR, textStatus, errorThrown) {
-//     console.log('Error fetching event data:', textStatus, errorThrown);
-//   });
-// }
+  // // Function to fetch event data using the access token
+  // function fetchEventData(accessToken, eventId) {
+  //   return $.ajax({
+  //     url: `https://sit.spicetrade.io/api/event?id=${eventId}`,
+  //     method: 'GET',
+  //     headers: {
+  //       'Authorization': `Bearer ${accessToken}`
+  //     }
+  //   }).done(function(eventResult) {
+  //     console.log("Event data:", eventResult);
+  //     eventflowData = eventResult;
+  //     return eventResult;
+  //   }).fail(function(jqXHR, textStatus, errorThrown) {
+  //     console.log('Error fetching event data:', textStatus, errorThrown);
+  //   });
+  // }
 
-// // Main function to orchestrate login and event data fetching
-// function getEventData(email, password, eventId) {
-//   login(email, password).then(function(accessToken) {
-//     if (accessToken) {
-//       return fetchEventData(accessToken.data.accessToken, eventId);
-//     } else {
-//       console.log('Unable to fetch event data due to failed login');
-//     }
-//   });
-// }
+  // // Main function to orchestrate login and event data fetching
+  // function getEventData(email, password, eventId) {
+  //   login(email, password).then(function(accessToken) {
+  //     if (accessToken) {
+  //       return fetchEventData(accessToken.data.accessToken, eventId);
+  //     } else {
+  //       console.log('Unable to fetch event data due to failed login');
+  //     }
+  //   });
+  // }
 
-// Call the main function with login credentials and event ID
-// getEventData("shubham@spicetrade.com", "123456", 8).then(result => {
-//   console.log("eventFlowData", result);
-// });
+  // Call the main function with login credentials and event ID
+  // getEventData("shubham@spicetrade.com", "123456", 8).then(result => {
+  //   console.log("eventFlowData", result);
+  // });
 
-// update html according to api
-async function populateData() {
-  const data = await getEventData("shubham@spicetrade.com", "123456", 8);
-  console.log("data",data);
+  // update html according to api
+  async function populateData() {
+    const data = await getEventData("shubham@spicetrade.com", "123456", 8);
+    console.log("data", data);
 
-  const {event, faq,banners} = data;
+    const { event, faq, banners, registerForms } = data;
 
-  if ($(".main-slider__sub-title").length) {
-    $('.main-slider__sub-title').text(`${event.kind} event`);
-  }
+    if ($(".main-slider__sub-title").length) {
+      $('.main-slider__sub-title').text(`${event.kind} event`);
+    }
 
-  if($(".main-slider__text".length)) {
-    $('.main-slider__text').html(`${event.description}`);
-  } 
-  
-  if($(".main-slider__img").length) {
-    let bannerImg = "";
-    for(let banner of banners ) {
-        if(banner.category == "EVENT_HERO_BANNER_IMG"){
+    if ($(".main-slider__text".length)) {
+      $('.main-slider__text').html(`${event.description}`);
+    }
+
+    if ($(".main-slider__img").length) {
+      let bannerImg = "";
+      for (let banner of banners) {
+        if (banner.category == "EVENT_HERO_BANNER_IMG") {
           bannerImg = banner.file;
           break;
         }
+      }
+      console.log("banner image", bannerImg);
+      $('.main-slider___img').attr('src', bannerImg);
     }
-    console.log("banner image",  bannerImg);
-    $('.main-slider___img').attr('src', bannerImg);
+
+    // debugger
+    populateFaq(faq)
+    populateCohort(registerForms);
+
   }
-   
-}
 
-populateData();
+  populateData();
 
+  function populateFaq(faq) {
+    if ($(".accrodion-grp").length) {
+      // var accrodionDiv = $('.accrodion').first();
+      for (let i = 0; i < faq.length; i++) {
+        const faqItem = faq[i];
+        // if(!faqItem.isActive) {
+        //   continue;
+        // }
+        let faqClassName = "";
+        if (i % 2 == 0) {
+          faqClassName = "faq-page__left"
+        } else {
+          faqClassName = "faq-page__right"
+        }
+
+        var accordionHTML = `
+                          <div class="accrodion">
+                                <div class="accrodion-title">
+                                    <h4>${faqItem.question}</h4>
+                                    <div class="faq-one-accrodion__count"></div>
+                                </div>
+                                <div class="accrodion-content">
+                                    <div class="inner">
+                                        <p>${faqItem.answer}</p>
+                                    </div><!-- /.inner -->
+                                </div>
+                            </div>
+`;
+        let faqDiv = $(`.${faqClassName} .accrodion-grp`);
+        faqDiv.append(accordionHTML);
+      }
+
+        // Accrodion
+  if ($(".accrodion-grp").length) {
+    var accrodionGrp = $(".accrodion-grp");
+    accrodionGrp.each(function () {
+      var accrodionName = $(this).data("grp-name");
+      var Self = $(this);
+      var accordion = Self.find(".accrodion");
+      Self.addClass(accrodionName);
+      Self.find(".accrodion .accrodion-content").hide();
+      Self.find(".accrodion.active").find(".accrodion-content").show();
+      accordion.each(function () {
+        $(this)
+          .find(".accrodion-title")
+          .on("click", function () {
+            if ($(this).parent().hasClass("active") === false) {
+              $(".accrodion-grp." + accrodionName)
+                .find(".accrodion")
+                .removeClass("active");
+              $(".accrodion-grp." + accrodionName)
+                .find(".accrodion")
+                .find(".accrodion-content")
+                .slideUp();
+              $(this).parent().addClass("active");
+              $(this).parent().find(".accrodion-content").slideDown();
+            }
+          });
+      });
+    });
+  }
+    }
+  }
+
+  function populateCohort(registerForm){
+    if($(".cohort-dropdown-content").length) {
+      let cohortDiv = $(".cohort-dropdown-content");
+      Object.keys(registerForm).forEach(cohort => {
+          let cohortOption =  `<a class="thm-btn" href="register.html?id=${cohort}" data-value="${cohort}">${cohort}</a>`;
+          cohortDiv.append(cohortOption)
+      });
+    }
+  }
+  
 
 
   // Popular Causes Progress Bar
@@ -288,35 +366,7 @@ populateData();
     );
   }
 
-  // Accrodion
-  if ($(".accrodion-grp").length) {
-    var accrodionGrp = $(".accrodion-grp");
-    accrodionGrp.each(function () {
-      var accrodionName = $(this).data("grp-name");
-      var Self = $(this);
-      var accordion = Self.find(".accrodion");
-      Self.addClass(accrodionName);
-      Self.find(".accrodion .accrodion-content").hide();
-      Self.find(".accrodion.active").find(".accrodion-content").show();
-      accordion.each(function () {
-        $(this)
-          .find(".accrodion-title")
-          .on("click", function () {
-            if ($(this).parent().hasClass("active") === false) {
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .removeClass("active");
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .find(".accrodion-content")
-                .slideUp();
-              $(this).parent().addClass("active");
-              $(this).parent().find(".accrodion-content").slideDown();
-            }
-          });
-      });
-    });
-  }
+
 
 
   if ($(".scroll-to-target").length) {
