@@ -211,6 +211,18 @@ async function populateData() {
   if($(".main-slider__text".length)) {
     $('.main-slider__text').html(`${event.description}`);
   } 
+  
+  if($(".main-slider__img").length) {
+    let bannerImg = "";
+    for(let banner of banners ) {
+        if(banner.category == "EVENT_HERO_BANNER_IMG"){
+          bannerImg = banner.file;
+          break;
+        }
+    }
+    console.log("banner image",  bannerImg);
+    $('.main-slider___img').attr('src', bannerImg);
+  }
    
 }
 

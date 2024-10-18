@@ -1541,6 +1541,8 @@ ul {
 
 .main-slider .swiper-slide {
   position: relative;
+  /* float: left; */
+  /* flex: 1; */
   background-color: var(--eventflow-black);
 }
 
@@ -1976,12 +1978,17 @@ ul {
 }
 
 .main-slider-two .swiper-slide {
-  position: relative;
+  /* position: relative; */
+  /* flex: 1; */
+  float: left;
+  padding: 10%;
+  width: 50%;
   background-color: var(--eventflow-black);
 }
 
 .main-slider-two .container {
   position: relative;
+  flex: 1;
   padding-top: 150px;
   padding-bottom: 150px;
   z-index: 30;
