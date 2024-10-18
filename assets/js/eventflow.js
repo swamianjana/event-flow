@@ -14,8 +14,6 @@
     $('.full-height').css("height", $(window).height());
   }
 
-
-
   function thmSwiperInit() {
     // swiper slider
     if ($(".thm-swiper__slider").length) {
@@ -60,10 +58,163 @@
 
 
   }
+  // api code
 
+  var eventFlowData = null;
 
+  // Function to handle login and return the access token
+  async function login(email, password) {
+    var loginHeaders = new Headers();
+    loginHeaders.append("Content-Type", "application/json");
 
+    var loginData = JSON.stringify({
+      "email": email,
+      "password": password
+    });
 
+    var loginOptions = {
+      method: 'POST',
+      headers: loginHeaders,
+      body: loginData
+    };
+
+    try {
+      let response = await fetch("https://sit.spicetrade.io/api/auth/login", loginOptions);
+      let result = await response.json(); // Parse the response as JSON
+
+      if (result.data && result.data.accessToken) {
+        console.log("Login successful, access token:", result.data.accessToken);
+        return result.data.accessToken; // Return the access token
+      } else {
+        console.log('Login failed:', result.message);
+        return null;
+      }
+    } catch (error) {
+      console.log('Error logging in:', error);
+      return null;
+    }
+  }
+
+  // Function to fetch event data using the access token
+  async function fetchEventData(accessToken, eventId) {
+    var eventHeaders = new Headers();
+    eventHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+    var eventOptions = {
+      method: 'GET',
+      headers: eventHeaders,
+      redirect: 'follow'
+    };
+
+    try {
+      let response = await fetch(`https://sit.spicetrade.io/api/event?id=${eventId}`, eventOptions);
+      let eventResult = await response.json();
+      console.log("Event data:", eventResult);
+      eventFlowData = eventResult;
+      return eventResult;
+    } catch (error) {
+      console.log('Error fetching event data:', error);
+    }
+  }
+
+  // Main function to orchestrate login and event data fetching
+  async function getEventData(email, password, eventId) {
+    if(eventFlowData) {
+      return eventFlowData;
+    }
+    let accessToken = await login(email, password);
+
+    if (accessToken) {
+      eventFlowData = await fetchEventData(accessToken, eventId);
+      
+    } else {
+      console.log('Unable to fetch event data due to failed login');
+    }
+    return eventFlowData.data;
+  }
+
+  // Call the main function with login credentials and event ID
+  getEventData("shubham@spicetrade.com", "123456", 8);
+
+  // console.log("event flow data", eventFlowData);
+
+  // var eventflowData ={};
+
+  // Function to handle login and return the access token
+// function login(email, password) {
+//   return $.ajax({
+//     url: "https://sit.spicetrade.io/api/auth/login",
+//     method: 'POST',
+//     contentType: 'application/json',
+//     data: JSON.stringify({
+//       "email": email,
+//       "password": password
+//     }),
+//   }).done(function(result) {
+//     if (result.data && result.data.accessToken) {
+//       console.log("Login successful, access token:", result.data.accessToken);
+//       return result.data.accessToken; // Return the access token
+//     } else {
+//       console.log('Login failed:', result.message);
+//       return null;
+//     }
+//   }).fail(function(jqXHR, textStatus, errorThrown) {
+//     console.log('Error logging in:', textStatus, errorThrown);
+//     return null;
+//   });
+// }
+
+// // Function to fetch event data using the access token
+// function fetchEventData(accessToken, eventId) {
+//   return $.ajax({
+//     url: `https://sit.spicetrade.io/api/event?id=${eventId}`,
+//     method: 'GET',
+//     headers: {
+//       'Authorization': `Bearer ${accessToken}`
+//     }
+//   }).done(function(eventResult) {
+//     console.log("Event data:", eventResult);
+//     eventflowData = eventResult;
+//     return eventResult;
+//   }).fail(function(jqXHR, textStatus, errorThrown) {
+//     console.log('Error fetching event data:', textStatus, errorThrown);
+//   });
+// }
+
+// // Main function to orchestrate login and event data fetching
+// function getEventData(email, password, eventId) {
+//   login(email, password).then(function(accessToken) {
+//     if (accessToken) {
+//       return fetchEventData(accessToken.data.accessToken, eventId);
+//     } else {
+//       console.log('Unable to fetch event data due to failed login');
+//     }
+//   });
+// }
+
+// Call the main function with login credentials and event ID
+// getEventData("shubham@spicetrade.com", "123456", 8).then(result => {
+//   console.log("eventFlowData", result);
+// });
+
+// update html according to api
+async function populateData() {
+  const data = await getEventData("shubham@spicetrade.com", "123456", 8);
+  console.log("data",data);
+
+  const {event, faq,banners} = data;
+
+  if ($(".main-slider__sub-title").length) {
+    $('.main-slider__sub-title').text(`${event.kind} event`);
+  }
+
+  if($(".main-slider__text".length)) {
+    $('.main-slider__text').html(`${event.description}`);
+  } 
+   
+}
+
+populateData();
 
 
 
@@ -75,8 +226,8 @@
         var percent = el.data("percent");
         $(el).css("width", percent).addClass("counted");
       }, {
-        accY: -50
-      }
+      accY: -50
+    }
     );
   }
 
@@ -89,8 +240,8 @@
           $(this).css("width", progressWidth + "%");
         });
       }, {
-        accY: 0
-      }
+      accY: 0
+    }
     );
   }
 
@@ -120,8 +271,8 @@
           });
         }
       }, {
-        accY: 0
-      }
+      accY: 0
+    }
     );
   }
 
@@ -161,8 +312,8 @@
       var target = $(this).attr("data-target");
       // animate
       $("html, body").animate({
-          scrollTop: $(target).offset().top
-        },
+        scrollTop: $(target).offset().top
+      },
         1000
       );
 
@@ -557,8 +708,8 @@
         $("html, body")
           .stop()
           .animate({
-              scrollTop: $(target.attr("href")).offset().top - headerH + "px"
-            },
+            scrollTop: $(target.attr("href")).offset().top - headerH + "px"
+          },
             1200,
             "easeInOutExpo"
           );
@@ -749,7 +900,4 @@
 
 
   $('select:not(.ignore)').niceSelect();
-
-
-
 })(jQuery);
