@@ -198,11 +198,22 @@
   // });
 
   // update html according to api
+
+  function formateDate(dateString) {
+
+    const date = new Date(dateString);
+    
+    // Options to format the date as "7 July 2024"
+    const options = { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+    return formattedDate;
+  }
+
   async function populateData() {
     const data = await getEventData("shubham@spicetrade.com", "123456", 8);
     console.log("data", data);
 
-    const { event, faq, banners, registerForms } = data;
+    const { event, faq, banners, registerForms, agendas } = data;
 
     if ($(".main-slider__sub-title").length) {
       $('.main-slider__sub-title').text(`${event.kind} event`);
@@ -210,6 +221,14 @@
 
     if ($(".main-slider__text".length)) {
       $('.main-slider__text').html(`${event.description}`);
+    }
+
+    $(".main-slider__title").text(event.name);
+
+    $(".event-start-end-time").text(`${formateDate(event.startDate)} - ${formateDate(event.endDate)}`);
+
+    if ($(".event-address-p").length) {
+      $(".event-address-p").text(event.address)
     }
 
     if ($(".main-slider__img").length) {
@@ -225,7 +244,9 @@
     }
 
     // debugger
-    populateFaq(faq)
+    populateSpeakers(agendas);
+    populateBanners(banners);
+    populateFaq(faq);
     populateCohort(registerForms);
     populateForm(registerForms);
 
@@ -297,6 +318,63 @@
     }
   }
 
+  function populateSpeakers(agendas) {
+    const speakers = agendas[0].speakers;
+    let speakerListDiv = $(".speaker-list");
+    speakers.forEach(speaker => {
+        const speakerContent = `
+        <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
+                    <div class="team-one__single">
+                        <div class="team-one__img-box">
+                            <div class="team-one__img">
+                                <img src="${speaker.photo}" alt="">
+                                <div class="team-one__content">
+                                    <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</a></h4>
+                                    <p class="team-one__sub-title">${speaker.subtitle}
+                                    </p>
+                                </div>
+                                <div class="team-one__content-hover">
+                                    <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</a>
+                                    </h4>
+                                    <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
+                                    <p class="team-one__text-hover">${speaker.about}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        `;
+
+        speakerListDiv.append(speakerContent);
+    })
+  }
+
+  function populateBanners(banners) {
+     const masonaryLayoutDiv = $(".masonary-layout");
+     banners.forEach(banner => {
+      if(banner.category != "EVENT_HERO_BANNER_IMG") {
+      const masonaryContent = `
+      <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="gallery-one__single">
+                        <div class="gallery-one__img">
+                            <img src="${banner.file}" alt="">
+                            <div class="gallery-one__content">
+                                <div class="gallery-one__sub-title-box">
+                                    <div class="gallery-one__sub-title-shape"></div>
+                                    <p class="gallery-one__sub-title">${banner.title}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+      `;
+
+      masonaryLayoutDiv.append(masonaryContent);
+      }
+  });
+  projectMasonaryLayout();
+  }
+
   function populateCohort(registerForm) {
     if ($(".cohort-dropdown-content").length) {
       let cohortDiv = $(".cohort-dropdown-content");
@@ -359,21 +437,21 @@
       e.preventDefault(); // Prevent default form submission
 
       const formData = {};
-      
+
       // Collect all input values dynamically
       $('#dynamic-form').find('input, select, textarea').each(function () {
-          const $input = $(this);
-          const name = $input.attr('name');
-          const value = $input.val();
+        const $input = $(this);
+        const name = $input.attr('name');
+        const value = $input.val();
 
-          // Handle radio buttons: only add the checked ones
-          if ($input.attr('type') === 'radio') {
-              if ($input.is(':checked')) {
-                  formData[name] = value;
-              }
-          } else {
-              formData[name] = value;
+        // Handle radio buttons: only add the checked ones
+        if ($input.attr('type') === 'radio') {
+          if ($input.is(':checked')) {
+            formData[name] = value;
           }
+        } else {
+          formData[name] = value;
+        }
       });
       console.log('Collected form data:', formData);
       alert('Data saved successfully!');
@@ -893,7 +971,7 @@
     }
     thmSwiperInit();
     thmOwlInit();
-    projectMasonaryLayout();
+    // projectMasonaryLayout();
     fullHeight();
 
 

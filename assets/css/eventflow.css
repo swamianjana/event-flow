@@ -1541,9 +1541,11 @@ ul {
 
 .main-slider .swiper-slide {
   position: relative;
-  /* float: left; */
-  /* flex: 1; */
   background-color: var(--eventflow-black);
+}
+
+.main-slider__header{
+  display: flex;
 }
 
 .main-slider__img {
