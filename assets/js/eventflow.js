@@ -372,7 +372,7 @@
       masonaryLayoutDiv.append(masonaryContent);
       }
   });
-  projectMasonaryLayout();
+    projectMasonaryLayout();
   }
 
   function populateCohort(registerForm) {
