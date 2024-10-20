@@ -213,14 +213,21 @@
     const data = await getEventData("shubham@spicetrade.com", "123456", 8);
     console.log("data", data);
 
+
+    // object ke ander data extract krne k leye 
     const { event, faq, banners, registerForms, agendas } = data;
+    // let event = data.event;
 
     if ($(".main-slider__sub-title").length) {
       $('.main-slider__sub-title').text(`${event.kind} event`);
     }
 
+    // debugger;
     if ($(".main-slider__text".length)) {
       $('.main-slider__text').html(`${event.description}`);
+    }
+    if ($(".buy-ticket__text".length)) {
+      $('.buy-ticket__text').html(`${event.sectorOverview}`);
     }
 
     $(".main-slider__title").text(event.name);
@@ -319,7 +326,9 @@
   }
 
   function populateSpeakers(agendas) {
-    const speakers = agendas[0].speakers;
+    for(let i=0;i<agendas.length;i++){
+
+    const speakers = agendas[i].speakers;
     let speakerListDiv = $(".speaker-list");
     speakers.forEach(speaker => {
         const speakerContent = `
@@ -347,6 +356,7 @@
 
         speakerListDiv.append(speakerContent);
     })
+  }
   }
 
   function populateBanners(banners) {
@@ -385,6 +395,23 @@
     }
   }
 
+  // $(".cohort-dropdown-content").ready(function() {
+  //   $('.cohort-dropdown-content').on('change', function() {
+  //     var selectedRole = $(this).val();
+  
+  //     if (selectedRole === 'attendee') {
+  //       $('#attendee-section').removeClass('hidden');
+  //       $('#exhibitor-section').addClass('hidden');
+  //     } else if (selectedRole === 'exhibitor') {
+  //       $('#exhibitor-section').removeClass('hidden');
+  //       $('#attendee-section').addClass('hidden');
+  //     } else {
+  //       $('#attendee-section, #exhibitor-section').addClass('hidden');
+  //     }
+  //   });
+  // });
+  
+
   function getQueryParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -406,22 +433,22 @@
           // }
 
           // Label
-          fieldHtml += `<label for="${field.name}" class="reg-label">${field.label}</label>`;
+          fieldHtml += `<label for="${field.name}" class="reg-label">${field.label} ${field.isRequired ? "<span class='reg-required'>*</span>" : ''}</label>`;
 
           // Generate input based on field kind
           if (field.kind === "TEXT") {
-            fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input">`;
+            fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input" required="${field.isRequired}">`;
           } else if (field.kind === "EMAIL") {
-            fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input">`;
+            fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input"  required="${field.isRequired}">`;
           } else if (field.kind === "RADIO") {
             field.defaultValue.forEach(option => {
               fieldHtml += `
-                              <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio">
+                              <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio"  required="${field.isRequired}">
                               <label for="${option.value}" class="reg-label-inline">${option.label}</label>
                           `;
             });
           } else if (field.kind === "DATE") {
-            fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input">`;
+            fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input"  required="${field.isRequired}">`;
           }
 
           // Append the generated HTML to the form

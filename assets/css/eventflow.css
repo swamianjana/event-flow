@@ -149,9 +149,29 @@ ul {
   overflow: hidden;
 }
 
-.container {
-  padding-left: 15px;
-  padding-right: 15px;
+ .container {
+  /* padding-left: 15px;
+  padding-right: 15px; */
+  width: 100%;
+   border-radius: 50%;
+} 
+
+.speakers-container {
+  display: flex;
+  overflow-x: scroll; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent the items from wrapping to the next line */
+  padding: 10px;
+  gap: 20px;
+}
+
+.speaker-card {
+  flex: 0 0 auto; /* Prevent flex items from shrinking */
+  width: 200px;
+  padding: 10px;
+  background-color: #222;
+  color: #fff;
+  border-radius: 10px;
+  text-align: center;
 }
 
 .list-unstyled {
@@ -1545,13 +1565,19 @@ ul {
 }
 
 .main-slider__header{
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 24px;
+  margin-bottom: 16px;
   display: flex;
+  
 }
 
 .main-slider__img {
-  position: absolute;
+  /* position: absolute;
   top: 140px;
-  right: 350px;
+  right: 350px; */
+  max-width: 40%;
   opacity: 0;
   -webkit-transform: perspective(400px) rotateY(0deg) translateX(400px);
   -ms-transform: perspective(400px) rotateY(0deg) translateX(400px);
@@ -1567,7 +1593,6 @@ ul {
 }
 
 .main-slider__img img {
-  width: auto;
   border: 3px solid #41102B;
   border-radius: 20px;
 }
@@ -1713,9 +1738,13 @@ ul {
 
 .main-slider .container {
   position: relative;
-  padding-top: 226px;
-  padding-bottom: 194px;
   z-index: 30;
+  max-width: 60%;
+}
+
+.main-slider___img{
+  width: 585px;
+  height: 455px;
 }
 
 .main-slider__content {
@@ -8834,6 +8863,29 @@ ul {
   display: block;
 }
 
+.speaker-image-container {
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  scroll-behavior: smooth; /* Smooth scrolling effect */
+  scrollbar-width: auto;
+}
+
+.speaker-image-container::-webkit-scrollbar {
+  height: 2px; /* Height for horizontal scrollbar */
+}
+
+.speaker-image-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the scrollbar handle */
+  border-radius: 5px; /* Rounder corners for the scrollbar handle */
+}
+
+/* .speaker-image-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Background color of the scrollbar track 
+} */
+
 .event-details__speakers {
   position: relative;
   display: block;
@@ -10303,13 +10355,24 @@ ul {
   align-items: center;
   text-align: center;
   height: 300px;
-  /* justify-content: space-between; */
+  width: 100%;
+  /* margin: 10px 0; 
+   margin-bottom: 20px; 
+  width: 200px; */
+  border-radius: 30px;
+  margin: 10px 0; /* General margin for all buttons */
+  justify-content: space-between;
 }
 
 .dropdown {
   position: relative;
   display: inline-block;
+    /* margin: 10px 0; 
+   margin-bottom: 20px; 
+  width: 200px; */
 }
+
+
 
 .dropbtn:hover {
   background-color: linear-gradient(90deg, #4A0AB4 0%, #B20D5D 100%); /* Lighter purple on hover */
@@ -10331,6 +10394,8 @@ ul {
   text-decoration: none;
   display: block;
   transition: background-color 0.3s; /* Smooth transition */
+  margin: 10px 0; /* General margin for all buttons */
+  width: 200px;
 }
 
 .cohort-dropdown-content a:hover {
@@ -10340,6 +10405,11 @@ ul {
 .dropdown:hover .cohort-dropdown-content {
   display: block;
 }
+/*
+ .attendee {
+  margin-bottom: 20px; /* Extra space between ATTENDEE and EXHIBITOR 
+} 
+*/
 
 /* Responsive Styles */
 @media screen and (max-width: 600px) {
@@ -10364,7 +10434,6 @@ ul {
 
 .reg-form-main {
   font-family: Arial, sans-serif;
-    background-color: #222;
     color: white;
     display: flex;
     justify-content: center;
@@ -10375,10 +10444,7 @@ ul {
 }
 
 .reg-form-container {
-  background-color: #333;
-  border: 1px solid #555;
-  border-radius: 10px;
-  padding: 30px;
+  
   /* max-width: 400px; */
   width: 100%;
   
@@ -10424,6 +10490,10 @@ ul {
   color: purple;
 }
 
+.reg-required {
+  color: red; /* Change the color of the star */
+  margin-left: 5px; /* Add some space between the label and the star */
+}
 
 /* ------------- */
 
