@@ -1773,15 +1773,15 @@ main-menu__btn:hover{
   position: relative;
   z-index: 30;
   /* max-width: 40%;  -------------IF I WANT TEXT SMALL THEN WE 40% */
-  max-width: 80%;     /* --------if i want text bigger then i use 70% ------------*/
+  max-width: 90%;     /* --------if i want text bigger then i use 70% ------------*/
 }
 /* hero image size ----------------------- */
 .main-slider___img{
-  /* width: -webkit-fill-available; */
+  width: -webkit-fill-available;
   /* width: 851px;                ------- these will be use when we want to show big  hero image 
     height: 450px; -------------  ihese will for image height ---------*/
-    width: 700px;        /*    these will be useed when we want to show small image      */
-    height: 400px;
+    /* width: 850px;           these will be useed when we want to show small image      */ 
+    height: 350px;
   
 
 }
@@ -2967,7 +2967,7 @@ main-menu__btn:hover{
 }
 
 .team-one__img img {
-  height: 450px;        /*   sbi  speaker ki image ki size ko fix kr deya hmne  ============================== */
+  height: 550px;        /*   sbi  speaker ki image ki size ko fix kr deya hmne  ============================== */
   width: 350px;
   width: 100%;
   border-radius: 20px;
@@ -3212,24 +3212,38 @@ max-width: 1572px;
 
 
 
+/*  gallery ki image ko scroll  */
 
-
-
-.masonary-layout{         
-display: flex;
-  overflow-x: hidden;
+.masonary-vertical-layout{
   overflow-y: scroll;
-  /* flex-wrap: nowrap; */
-  /* white-space: nowrap;  */
-  scroll-behavior: smooth; 
-  scrollbar-width: auto;
+    /* margin-right: 8px; */
+    display: flex;
+    /* overflow-y: scroll; */
+    /* height: 354px; */
+    /* max-height: 100%; */
+    overflow-x: hidden;
+    /* max-width: 100%; */
+    /* flex-direction: row; */
+    gap: 24px;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
 }
 
-.masonary-layout::-webkit-scrollbar {               
+.masonary-layout{  
+  
+  height: 844px;
+   /* flex-wrap: nowrap;  */
+  /* white-space: nowrap;  */
+  /* scroll-behavior: smooth; 
+  scrollbar-width: auto; */
+}
+
+.masonary-vertical-layout::-webkit-scrollbar {               
   height: 2px; 
 }
 
-.masonary-layout::-webkit-scrollbar-thumb {        
+.masonary-vertical-layout::-webkit-scrollbar-thumb {        
   background-color: #888; 
   border-radius: 5px; 
 }
@@ -3245,7 +3259,7 @@ display: flex;
 
 
 
-
+/*  gallery scrolling  */
 
 
 .gallery-one .row {
@@ -3256,10 +3270,10 @@ display: flex;
   overflow-x: hidden;
   overflow-y: scroll;
   flex-wrap: nowrap;
-  /* white-space: nowrap; */
+  white-space: nowrap;
   scroll-behavior: smooth; /* Smooth scrolling effect */
   scrollbar-width: auto;
-  gap: 5px;
+  gap: 2px;
   padding: 10px;
   /* --bs-gutter-x: 10px; */
 }
@@ -3267,12 +3281,12 @@ display: flex;
 
 
 .speaker-image-container::-webkit-scrollbar {
-  height: 2px; /* Height for horizontal scrollbar */
+  height: 1px; /* Height for horizontal scrollbar */
 }
 
 .speaker-image-container::-webkit-scrollbar-thumb {
   background-color: #888; /* Color of the scrollbar handle */
-  border-radius: 5px; /* Rounder corners for the scrollbar handle */
+  border-radius: 2px; /* Rounder corners for the scrollbar handle */
 }
 
 .gallery-one__single {

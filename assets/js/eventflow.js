@@ -470,13 +470,23 @@ const scheduleDivContent = `
 
 tabContentDiv.append(scheduleDivContent);
 
-// button
+
+
+
+// button ===========================================
 
       // Append the schedule content to the corresponding tab based on the day
       // const tabContentDiv = $(`#${dayTab}`);
       // tabContentDiv.append(scheduleContent);
   }
-debugger
+
+
+
+
+
+
+
+// debugger
   if ($(".tabs-box").length) {
     $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
       e.preventDefault();
@@ -521,10 +531,14 @@ debugger
 
 
 
+
+
+
+
 // ===================== BANNERS =========================================
 
   function populateBanners(banners) {
-    const masonaryLayoutDiv = $(".masonary-layout");
+    const masonaryLayoutDiv = $(".masonary-vertical-layout");
     banners.forEach(banner => {
       if (banner.category == "EVENT_GALLERY_IMG") {
         const masonaryContent = `
