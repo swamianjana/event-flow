@@ -374,7 +374,7 @@
 function populateSchedule(agendas) {
   for (let i = 0; i < agendas.length; i++) {
       const agenda = agendas[i];
-      const dayTab = `#${i + 1}-day`; // Mapping agenda index to day tab
+      const dayTab = `${i + 1}-day`; // Mapping agenda index to day tab
       let day = `Day ${i + 1}`
       let scheduleContent1 = `
           <div class="schedule-one__tab-content-box">
@@ -415,7 +415,7 @@ function populateSchedule(agendas) {
 
     let tabContentUl = $(".tab-buttons");
     const scheduleLiContent = `
-    <li data-tab =${dayTab} class="tab-btn ">
+     <li data-tab ="#${dayTab}" class="tab-btn ">
                             <h3>${day}</h3>
                             <p>${formateDate(agenda.startDate)}</p>
                         </li>
