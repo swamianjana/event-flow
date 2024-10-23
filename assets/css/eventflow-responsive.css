@@ -1880,10 +1880,12 @@
     .main-slider__title {
         font-size: 30px;
         line-height: 40px;
+        /* color: white; */
     }
 
     .main-slider__text br {
         display: none;
+        
     }
 
     #main-slider-pagination {

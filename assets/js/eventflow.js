@@ -134,7 +134,7 @@
   }
 
   // Call the main function with login credentials and event ID
-  getEventData("shubham@spicetrade.com", "123456", 8);
+  // getEventData("shubham@spicetrade.com", "123456", 112);
 
   // console.log("event flow data", eventFlowData);
 
@@ -202,7 +202,7 @@
   function formateDate(dateString) {
 
     const date = new Date(dateString);
-    
+
     // Options to format the date as "7 July 2024"
     const options = { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
     const formattedDate = date.toLocaleDateString('en-GB', options);
@@ -210,7 +210,7 @@
   }
 
   async function populateData() {
-    const data = await getEventData("shubham@spicetrade.com", "123456", 8);
+    const data = await getEventData("shubham@spicetrade.com", "123456", 112);
     console.log("data", data);
 
 
@@ -246,6 +246,7 @@
           break;
         }
       }
+
       console.log("banner image", bannerImg);
       $('.main-slider___img').attr('src', bannerImg);
     }
@@ -256,6 +257,7 @@
     populateFaq(faq);
     populateCohort(registerForms);
     populateForm(registerForms);
+    populateSchedule(agendas);
 
   }
 
@@ -325,12 +327,18 @@
     }
   }
 
-  function populateSpeakers(agendas) {
-    for(let i=0;i<agendas.length;i++){
 
-    const speakers = agendas[i].speakers;
-    let speakerListDiv = $(".speaker-list");
-    speakers.forEach(speaker => {
+// ========================== speakers ============================================
+
+
+  function populateSpeakers(agendas) {
+    for (let i = 0; i < agendas.length; i++) {
+
+      const speakers = agendas[i].speakers;
+      let speakerListDiv = $(".speaker-list");
+      for (let i = 0; i < speakers.length; i++) {
+        const speaker = speakers[i];
+        // speakers.forEach(speaker => {
         const speakerContent = `
         <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
                     <div class="team-one__single">
@@ -355,15 +363,171 @@
         `;
 
         speakerListDiv.append(speakerContent);
-    })
-  }
+        // })
+      }
+    }
   }
 
+
+// ======================================== day 1, day 2, day3 =========================
+
+function populateSchedule(agendas) {
+  for (let i = 0; i < agendas.length; i++) {
+      const agenda = agendas[i];
+      const dayTab = `${i + 1}-day`; // Mapping agenda index to day tab
+      let day = `Day ${i + 1}`
+      let scheduleContent1 = `
+          <div class="schedule-one__tab-content-box">
+              <div class="schedule-one__single">
+                  <div class="schedule-one__left">
+                      <h3 class="schedule-one__title">${agenda.title}</h3>
+                      <p class="schedule-one__text">${agenda.description}</p>
+                  </div>
+                  <div class="schedule-one__img">
+                      <img src="assets/images/default.jpg" alt="">
+                  </div>
+                  <div class="schedule-one__address-and-btn-box">
+                      <ul class="list-unstyled schedule-one__address">
+                          <li>
+                              <div class="icon">
+                                  <span class="icon-clock"></span>
+                              </div>
+                              <div class="text">
+                                  <p>${new Date(agenda.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} to ${new Date(agenda.endDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br>${new Date(agenda.startDate).toLocaleDateString()}</p>
+                              </div>
+                          </li>
+                          <li>
+                              <div class="icon">
+                                  <span class="icon-pin"></span>
+                              </div>
+                              <div class="text">
+                                  <p>${agenda.location}</p>
+                              </div>
+                          </li>
+                      </ul>
+                      <div class="schedule-one__btn-box">
+                          <a href="contact.html" class="schedule-one__btn thm-btn">Buy Ticket<span class="icon-arrow-right"></span></a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `;
+
+    let tabContentUl = $(".tab-buttons");
+    const scheduleLiContent = `
+    <li data-tab =${dayTab} class="tab-btn ">
+                            <h3>${day}</h3>
+                            <p>${formateDate(agenda.startDate)}</p>
+                        </li>
+
+
+    
+    `;
+
+tabContentUl.append(scheduleLiContent);
+
+
+let tabContentDiv = $(".tabs-content");
+const scheduleDivContent = `
+     <div class="tab " id=${dayTab}>
+                            <div class="schedule-one__tab-content-box">
+                                <div class="schedule-one__single">
+                                    <div class="schedule-one__left">
+                                        <h3 class="schedule-one__title">${agenda.title}
+                                            </h3>
+                                        <p class="schedule-one__text">${agenda.description}</p>
+                                    </div>
+                                    <div class="schedule-one__img">
+                                        <img src="assets/images/image2/sch1.jpg" alt="">
+                                    </div>
+                                    <div class="schedule-one__address-and-btn-box">
+                                        <ul class="list-unstyled schedule-one__address">
+                                            <li>
+                                                <div class="icon">
+                                                    <span class="icon-clock"></span>
+                                                </div>
+                                                <div class="text">
+                                             <p>${new Date(agenda.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} to ${new Date(agenda.endDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br>${new Date(agenda.startDate).toLocaleDateString()}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="icon">
+                                                    <span class="icon-pin"></span>
+                                                </div>
+                                                <div class="text">
+                                                    <p>${agenda.location}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="schedule-one__btn-box">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+`
+
+tabContentDiv.append(scheduleDivContent);
+
+// button
+
+      // Append the schedule content to the corresponding tab based on the day
+      // const tabContentDiv = $(`#${dayTab}`);
+      // tabContentDiv.append(scheduleContent);
+  }
+debugger
+  if ($(".tabs-box").length) {
+    $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
+      e.preventDefault();
+      var target = $($(this).attr("data-tab"));
+  debugger
+      if ($(target).is(":visible")) {
+        return false;
+      } else {
+        target
+          .parents(".tabs-box")
+          .find(".tab-buttons")
+          .find(".tab-btn")
+          .removeClass("active-btn");
+        $(this).addClass("active-btn");
+        target
+          .parents(".tabs-box")
+          .find(".tabs-content")
+          .find(".tab")
+          .fadeOut(0);
+        target
+          .parents(".tabs-box")
+          .find(".tabs-content")
+          .find(".tab")
+          .removeClass("active-tab");
+        $(target).fadeIn(300);
+        $(target).addClass("active-tab");
+      }
+    });
+  }
+  
+  
+  
+}
+
+// Example usage with your agendas array
+// populateSchedule(agendas);
+
+
+
+
+
+
+
+
+// ===================== BANNERS =========================================
+
   function populateBanners(banners) {
-     const masonaryLayoutDiv = $(".masonary-layout");
-     banners.forEach(banner => {
-      if(banner.category != "EVENT_HERO_BANNER_IMG") {
-      const masonaryContent = `
+    const masonaryLayoutDiv = $(".masonary-layout");
+    banners.forEach(banner => {
+      if (banner.category == "EVENT_GALLERY_IMG") {
+        const masonaryContent = `
       <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="gallery-one__single">
                         <div class="gallery-one__img">
@@ -379,11 +543,16 @@
                 </div>
       `;
 
-      masonaryLayoutDiv.append(masonaryContent);
+        masonaryLayoutDiv.append(masonaryContent);
       }
-  });
-    projectMasonaryLayout();
+    });
+    // images overlap ho rhi thi usko fix krne k leye------------------
+    // projectMasonaryLayout();       
+    // 
   }
+
+
+
 
   function populateCohort(registerForm) {
     if ($(".cohort-dropdown-content").length) {
@@ -398,7 +567,7 @@
   // $(".cohort-dropdown-content").ready(function() {
   //   $('.cohort-dropdown-content').on('change', function() {
   //     var selectedRole = $(this).val();
-  
+
   //     if (selectedRole === 'attendee') {
   //       $('#attendee-section').removeClass('hidden');
   //       $('#exhibitor-section').addClass('hidden');
@@ -410,7 +579,7 @@
   //     }
   //   });
   // });
-  
+
 
   function getQueryParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -418,44 +587,64 @@
   }
 
   function populateForm(registerForm) {
-    const id = getQueryParameter('id');
+    const id = getQueryParameter('id'); // Assuming id is passed via query parameter
     const $form = $('#dynamic-form');
-    $(".reg-header").append(id);
+    $(".reg-header").append(id); // Set title or some element to show ID
     $form.empty(); // Clear previous fields
-    if (id) {
-      registerForm[id].forEach(field => {
-        if (field.isActive == true) {
-          let fieldHtml = '';
 
-          // Section header
-          // if (field.sectionHeader) {
-          //   // fieldHtml += `<h2 class="reg-section-header">${field.sectionHeader}</h2>`;
-          // }
+    if (id && registerForm[id]) {
+        let sections = {}; // Object to store sections
 
-          // Label
-          fieldHtml += `<label for="${field.name}" class="reg-label">${field.label} ${field.isRequired ? "<span class='reg-required'>*</span>" : ''}</label>`;
+        registerForm[id].forEach(field => {
+            if (field.isActive == true) {
+                let fieldHtml = '';
 
-          // Generate input based on field kind
-          if (field.kind === "TEXT") {
-            fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input" required="${field.isRequired}">`;
-          } else if (field.kind === "EMAIL") {
-            fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder}" class="reg-input"  required="${field.isRequired}">`;
-          } else if (field.kind === "RADIO") {
-            field.defaultValue.forEach(option => {
-              fieldHtml += `
-                              <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio"  required="${field.isRequired}">
-                              <label for="${option.value}" class="reg-label-inline">${option.label}</label>
-                          `;
-            });
-          } else if (field.kind === "DATE") {
-            fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input"  required="${field.isRequired}">`;
-          }
+                // Create sections dynamically
+                let sectionHeader = field.sectionHeader || "General";
 
-          // Append the generated HTML to the form
-          $form.append(fieldHtml);
-        }
-      });
-      $form.append('<button type="submit" class="reg-button">Submit</button>');
+                // If section doesn't exist, create it
+                if (!sections[sectionHeader]) {
+                    sections[sectionHeader] = $(`
+                        <section>
+                            <h2 class="reg-section-header">${sectionHeader}</h2>
+                            <div class="reg-grid"></div>
+                        </section>
+                    `);
+                    $form.append(sections[sectionHeader]);
+                }
+
+                // Label for the field
+                fieldHtml += `<label for="${field.name}" class="reg-label">${field.label} ${field.isRequired ? "<span class='reg-required'>*</span>" : ''}</label>`;
+
+                // Create input fields based on the type (kind)
+                if (field.kind === "TEXT") {
+                    fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else if (field.kind === "EMAIL") {
+                    fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else if (field.kind === "RADIO") {
+                    const defaultValue = typeof field.defaultValue == 'string' ? JSON.parse(field.defaultValue) : field.defaultValue;
+                    defaultValue.forEach(option => {
+                        fieldHtml += `
+                            <div class="reg-radio-group">
+                                <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio" ${field.isRequired ? "required" : ""}>
+                                <label for="${option.value}" class="reg-label-inline">${option.label}</label>
+                            </div>
+                        `;
+                    });
+                } else if (field.kind === "DATE") {
+                    fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else {
+                  fieldHtml += `<input type="${field.kind.toLowerCase}" id="${field.name}" name="${field.name}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                }
+
+                // Append generated field to the section's grid
+                sections[sectionHeader].find('.reg-grid').append(`<div class="reg-grid-item">${fieldHtml}</div>`);
+            }
+        });
+
+        // Append submit button at the end of the form
+        $form.append('<button type="submit" class="reg-button">Submit</button>');
+
 
       // Add a submit button
     }
@@ -848,37 +1037,6 @@
     });
   }
 
-
-
-  if ($(".tabs-box").length) {
-    $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
-      e.preventDefault();
-      var target = $($(this).attr("data-tab"));
-
-      if ($(target).is(":visible")) {
-        return false;
-      } else {
-        target
-          .parents(".tabs-box")
-          .find(".tab-buttons")
-          .find(".tab-btn")
-          .removeClass("active-btn");
-        $(this).addClass("active-btn");
-        target
-          .parents(".tabs-box")
-          .find(".tabs-content")
-          .find(".tab")
-          .fadeOut(0);
-        target
-          .parents(".tabs-box")
-          .find(".tabs-content")
-          .find(".tab")
-          .removeClass("active-tab");
-        $(target).fadeIn(300);
-        $(target).addClass("active-tab");
-      }
-    });
-  }
 
 
 
