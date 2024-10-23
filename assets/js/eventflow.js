@@ -270,6 +270,7 @@
     populateCohort(registerForms);
     populateForm(registerForms);
     populateSchedule(agendas);
+    populateEventObjective(event);
 
   }
 
@@ -495,10 +496,6 @@ tabContentDiv.append(scheduleDivContent);
 
 
 
-
-
-
-
   if ($(".tabs-box").length) {
     $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
       e.preventDefault();
@@ -536,6 +533,42 @@ tabContentDiv.append(scheduleDivContent);
 // Example usage with your agendas array
 // populateSchedule(agendas);
 
+
+// event objective=============
+
+function populateEventObjective(event) {
+  
+  let keyObjective  =  event.keyObjectivesJson;     
+
+  let keyObjectiveJson = $(".key-objective-json");
+
+  Object.entries(keyObjective).forEach(([key, value]) => {
+
+    
+
+    const keyObjectives = `
+     <div class="col-xl-4 col-lg-4 wow fadeInLeft" data-wow-delay="100ms">
+                    <div class="services-one__single">
+                        <div class="services-one__icon">
+                            <!-- <span class="icon-camera"></span> -->
+                        </div>
+                        <h3 class="services-one__title">${key}</h3>
+                        <p class="services-one__text">${value}</p>
+                        <!-- <a href="event-prodigy.html" class="services-one__read-more">Read More <span
+                                    class="icon-arrow-right"></span></a> -->
+                    </div>
+                </div>
+    `
+
+
+ 
+    keyObjectiveJson.append(keyObjectives);
+
+  });
+  
+  
+
+}
 
 
 
