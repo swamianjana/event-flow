@@ -269,7 +269,7 @@
     populateFaq(faq);
     populateCohort(registerForms);
     populateForm(registerForms);
-    populateSchedule(agendas);
+    populateSchedule(agendas,banners);
     populateEventObjective(event);
 
   }
@@ -384,47 +384,15 @@
 
 // ======================================== day 1, day 2, day3 =========================
 
-function populateSchedule(agendas) {
+function populateSchedule(agendas,banners) {
+ const scheduleImage =  banners.filter(it => it.category == 'EVENT_AGENDA_IMG');
+  
+
   for (let i = 0; i < agendas.length; i++) {
       const agenda = agendas[i];
       const dayTab = `${i + 1}-day`; // Mapping agenda index to day tab
       let day = `Day ${i + 1}`
-      let scheduleContent1 = `
-          <div class="schedule-one__tab-content-box">
-              <div class="schedule-one__single">
-                  <div class="schedule-one__left">
-                      <h3 class="schedule-one__title">${agenda.title}</h3>
-                      <p class="schedule-one__text">${agenda.description}</p>
-                  </div>
-                  <div class="schedule-one__img">
-                      <img src="assets/images/default.jpg" alt="">
-                  </div>
-                  <div class="schedule-one__address-and-btn-box">
-                      <ul class="list-unstyled schedule-one__address">
-                          <li>
-                              <div class="icon">
-                                  <span class="icon-clock"></span>
-                              </div>
-                              <div class="text">
-                                  <p>${new Date(agenda.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} to ${new Date(agenda.endDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br>${new Date(agenda.startDate).toLocaleDateString()}</p>
-                              </div>
-                          </li>
-                          <li>
-                              <div class="icon">
-                                  <span class="icon-pin"></span>
-                              </div>
-                              <div class="text">
-                                  <p>${agenda.location}</p>
-                              </div>
-                          </li>
-                      </ul>
-                      <div class="schedule-one__btn-box">
-                          <a href="contact.html" class="schedule-one__btn thm-btn">Buy Ticket<span class="icon-arrow-right"></span></a>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      `;
+    
 
     let tabContentUl = $(".tab-buttons");
     const scheduleLiContent = `
@@ -451,7 +419,7 @@ const scheduleDivContent = `
                                         <p class="schedule-one__text">${agenda.description}</p>
                                     </div>
                                     <div class="schedule-one__img">
-                                        <img src="assets/images/image2/sch1.jpg" alt="">
+                                        <img src="${scheduleImage[i] ? scheduleImage[i].file : ''}" alt="">
                                     </div>
                                     <div class="schedule-one__address-and-btn-box">
                                         <ul class="list-unstyled schedule-one__address">
