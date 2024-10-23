@@ -209,6 +209,18 @@
     return formattedDate;
   }
 
+
+  function formatTimeTo12Hour(dateString) {
+    return new Date(dateString).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        hour12: true
+    }).toUpperCase();
+}
+
+
+
   async function populateData() {
     const data = await getEventData("shubham@spicetrade.com", "123456", 112);
     console.log("data", data);
@@ -447,7 +459,7 @@ const scheduleDivContent = `
                                                     <span class="icon-clock"></span>
                                                 </div>
                                                 <div class="text">
-                                             <p>${new Date(agenda.startDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} to ${new Date(agenda.endDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}<br>${new Date(agenda.startDate).toLocaleDateString()}</p>
+                                        <p>${formatTimeTo12Hour(agenda.startDate)} to ${formatTimeTo12Hour(agenda.endDate)}<br>${formateDate(agenda.startDate)}</p>
                                                 </div>
                                             </li>
                                             <li>
@@ -486,7 +498,7 @@ tabContentDiv.append(scheduleDivContent);
 
 
 
-debugger
+
   if ($(".tabs-box").length) {
     $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
       e.preventDefault();
