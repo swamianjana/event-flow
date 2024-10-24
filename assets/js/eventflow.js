@@ -77,9 +77,9 @@
       headers: loginHeaders,
       body: loginData
     };
-
+    
     try {
-      let response = await fetch("https://sit.spicetrade.io/api/auth/login", loginOptions);
+      let response = await fetch("https://api.web.spicetrade.io/api/auth/login", loginOptions);
       let result = await response.json(); // Parse the response as JSON
 
       if (result.data && result.data.accessToken) {
@@ -107,7 +107,7 @@
     };
 
     try {
-      let response = await fetch(`https://sit.spicetrade.io/api/event?id=${eventId}`, eventOptions);
+      let response = await fetch(`https://api.web.spicetrade.io/api/event?id=${eventId}`, eventOptions);
       let eventResult = await response.json();
       console.log("Event data:", eventResult);
       eventFlowData = eventResult;
@@ -222,7 +222,7 @@
 
 
   async function populateData() {
-    const data = await getEventData("shubham@spicetrade.com", "123456", 112);
+    const data = await getEventData("shubham@spicetrade.com", "123456", 26);
     console.log("data", data);
 
 
@@ -385,7 +385,7 @@
 // ======================================== day 1, day 2, day3 =========================
 
 function populateSchedule(agendas,banners) {
- const scheduleImage =  banners.filter(it => it.category == 'EVENT_AGENDA_IMG');
+ const scheduleImage =  banners.filter(it => it.category == 'EVENT_PRESENTATION');
   
 
   for (let i = 0; i < agendas.length; i++) {
@@ -552,8 +552,10 @@ function populateEventObjective(event) {
 
   function populateBanners(banners) {
     const masonaryLayoutDiv = $(".masonary-vertical-layout");
+    console.log("banners=" ,banners);
     banners.forEach(banner => {
       if (banner.category == "EVENT_GALLERY_IMG") {
+        
         const masonaryContent = `
       <div class="col-xl-3 col-lg-6 col-md-6">
                     <div class="gallery-one__single">
