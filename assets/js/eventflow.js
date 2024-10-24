@@ -58,7 +58,9 @@
 
 
   }
-  // api code
+
+
+  // api code =================================================
 
   var eventFlowData = null;
 
@@ -344,42 +346,104 @@
 // ========================== speakers ============================================
 
 
-  function populateSpeakers(agendas) {
-    for (let i = 0; i < agendas.length; i++) {
+// in this  code speakers ki image repaete ho skti h 
 
-      const speakers = agendas[i].speakers;
-      let speakerListDiv = $(".speaker-list");
-      for (let i = 0; i < speakers.length; i++) {
-        const speaker = speakers[i];
-        // speakers.forEach(speaker => {
-        const speakerContent = `
-        <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
-                    <div class="team-one__single">
-                        <div class="team-one__img-box">
-                            <div class="team-one__img">
-                                <img src="${speaker.photo}" alt="">
-                                <div class="team-one__content">
-                                    <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</a></h4>
-                                    <p class="team-one__sub-title">${speaker.subtitle}
-                                    </p>
-                                </div>
-                                <div class="team-one__content-hover">
-                                    <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</a>
-                                    </h4>
-                                    <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
-                                    <p class="team-one__text-hover">${speaker.about}</p>
+
+  // function populateSpeakers(agendas) {
+  //   for (let i = 0; i < agendas.length; i++) {
+
+  //     const speakers = agendas[i].speakers;
+  //     let speakerListDiv = $(".speaker-list");
+  //     for (let i = 0; i < speakers.length; i++) {
+  //       const speaker = speakers[i];
+  //       // speakers.forEach(speaker => {
+  //       const speakerContent = `
+  //       <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
+  //                   <div class="team-one__single">
+  //                       <div class="team-one__img-box">
+  //                           <div class="team-one__img">
+  //                               <img src="${speaker.photo}" alt="">
+  //                               <div class="team-one__content">
+  //                                   <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</a></h4>
+  //                                   <p class="team-one__sub-title">${speaker.subtitle}
+  //                                   </p>
+  //                               </div>
+  //                               <div class="team-one__content-hover">
+  //                                   <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</a>
+  //                                   </h4>
+  //                                   <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
+  //                                   <p class="team-one__text-hover">${speaker.about}</p>
+  //                               </div>
+  //                           </div>
+  //                       </div>
+  //                   </div>
+  //               </div>
+  //       `;
+
+  //       speakerListDiv.append(speakerContent);
+  //       // })
+  //     }
+  //   }
+  // }
+// -------------------------------------------------------------------------------------------------
+
+
+
+// in this code speakers ki image repate nhi hogi ,  speakers ki image uniquely show hogi 
+
+
+  function populateSpeakers(agendas) {
+    // Create a set to track speakers we've already added
+    const addedSpeakers = new Set();
+    
+    for (let j = 0; j < agendas.length; j++) { // Renamed to 'j' for outer loop
+        const speakers = agendas[j].speakers;
+        let speakerListDiv = $(".speaker-list");
+
+        for (let i = 0; i < speakers.length; i++) {
+            const speaker = speakers[i];
+            
+            // Create a unique identifier for each speaker (could be ID or full name)
+            const speakerIdentifier = `${speaker.firstName}-${speaker.lastName}`;
+
+            // Only append speaker if they haven't been added yet
+            if (!addedSpeakers.has(speakerIdentifier)) {
+                const speakerContent = `
+                    <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
+                        <div class="team-one__single">
+                            <div class="team-one__img-box">
+                                <div class="team-one__img">
+                                    <img src="${speaker.photo}" alt="">
+                                    <div class="team-one__content">
+                                        <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</h4>
+                                        <p class="team-one__sub-title">${speaker.subtitle}</p>
+                                    </div>
+                                    <div class="team-one__content-hover">
+                                        <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</h4>
+                                        <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
+                                        <p class="team-one__text-hover">${speaker.about}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-        `;
+                `;
 
-        speakerListDiv.append(speakerContent);
-        // })
-      }
+                // Append speaker content
+                speakerListDiv.append(speakerContent);
+
+                // Add speaker to the set to prevent duplication
+                addedSpeakers.add(speakerIdentifier);
+            }
+        }
     }
-  }
+}
+
+
+
+
+
+
 
 
 // ======================================== day 1, day 2, day3 =========================
