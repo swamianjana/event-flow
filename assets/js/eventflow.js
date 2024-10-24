@@ -14,8 +14,6 @@
     $('.full-height').css("height", $(window).height());
   }
 
-
-
   function thmSwiperInit() {
     // swiper slider
     if ($(".thm-swiper__slider").length) {
@@ -62,10 +60,712 @@
   }
 
 
+  // api code =================================================
+
+  var eventFlowData = null;
+
+  // Function to handle login and return the access token
+  async function login(email, password) {
+    var loginHeaders = new Headers();
+    loginHeaders.append("Content-Type", "application/json");
+
+    var loginData = JSON.stringify({
+      "email": email,
+      "password": password
+    });
+
+    var loginOptions = {
+      method: 'POST',
+      headers: loginHeaders,
+      body: loginData
+    };
+    
+    try {
+      let response = await fetch("https://api.web.spicetrade.io/api/auth/login", loginOptions);
+      let result = await response.json(); // Parse the response as JSON
+
+      if (result.data && result.data.accessToken) {
+        console.log("Login successful, access token:", result.data.accessToken);
+        return result.data.accessToken; // Return the access token
+      } else {
+        console.log('Login failed:', result.message);
+        return null;
+      }
+    } catch (error) {
+      console.log('Error logging in:', error);
+      return null;
+    }
+  }
+
+  // Function to fetch event data using the access token
+  async function fetchEventData(accessToken, eventId) {
+    var eventHeaders = new Headers();
+    eventHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+    var eventOptions = {
+      method: 'GET',
+      headers: eventHeaders,
+      redirect: 'follow'
+    };
+
+    try {
+      let response = await fetch(`https://api.web.spicetrade.io/api/event?id=${eventId}`, eventOptions);
+      let eventResult = await response.json();
+      console.log("Event data:", eventResult);
+      eventFlowData = eventResult;
+      return eventResult;
+    } catch (error) {
+      console.log('Error fetching event data:', error);
+    }
+  }
+
+  // Main function to orchestrate login and event data fetching
+  async function getEventData(email, password, eventId) {
+    if (eventFlowData) {
+      return eventFlowData;
+    }
+    let accessToken = await login(email, password);
+
+    if (accessToken) {
+      eventFlowData = await fetchEventData(accessToken, eventId);
+
+    } else {
+      console.log('Unable to fetch event data due to failed login');
+    }
+    return eventFlowData.data;
+  }
+
+  // Call the main function with login credentials and event ID
+  // getEventData("shubham@spicetrade.com", "123456", 112);
+
+  // console.log("event flow data", eventFlowData);
+
+  // var eventflowData ={};
+
+  // Function to handle login and return the access token
+  // function login(email, password) {
+  //   return $.ajax({
+  //     url: "https://sit.spicetrade.io/api/auth/login",
+  //     method: 'POST',
+  //     contentType: 'application/json',
+  //     data: JSON.stringify({
+  //       "email": email,
+  //       "password": password
+  //     }),
+  //   }).done(function(result) {
+  //     if (result.data && result.data.accessToken) {
+  //       console.log("Login successful, access token:", result.data.accessToken);
+  //       return result.data.accessToken; // Return the access token
+  //     } else {
+  //       console.log('Login failed:', result.message);
+  //       return null;
+  //     }
+  //   }).fail(function(jqXHR, textStatus, errorThrown) {
+  //     console.log('Error logging in:', textStatus, errorThrown);
+  //     return null;
+  //   });
+  // }
+
+  // // Function to fetch event data using the access token
+  // function fetchEventData(accessToken, eventId) {
+  //   return $.ajax({
+  //     url: `https://sit.spicetrade.io/api/event?id=${eventId}`,
+  //     method: 'GET',
+  //     headers: {
+  //       'Authorization': `Bearer ${accessToken}`
+  //     }
+  //   }).done(function(eventResult) {
+  //     console.log("Event data:", eventResult);
+  //     eventflowData = eventResult;
+  //     return eventResult;
+  //   }).fail(function(jqXHR, textStatus, errorThrown) {
+  //     console.log('Error fetching event data:', textStatus, errorThrown);
+  //   });
+  // }
+
+  // // Main function to orchestrate login and event data fetching
+  // function getEventData(email, password, eventId) {
+  //   login(email, password).then(function(accessToken) {
+  //     if (accessToken) {
+  //       return fetchEventData(accessToken.data.accessToken, eventId);
+  //     } else {
+  //       console.log('Unable to fetch event data due to failed login');
+  //     }
+  //   });
+  // }
+
+  // Call the main function with login credentials and event ID
+  // getEventData("shubham@spicetrade.com", "123456", 8).then(result => {
+  //   console.log("eventFlowData", result);
+  // });
+
+  // update html according to api
+
+  function formateDate(dateString) {
+
+    const date = new Date(dateString);
+
+    // Options to format the date as "7 July 2024"
+    const options = { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+    return formattedDate;
+  }
+
+
+  function formatTimeTo12Hour(dateString) {
+    return new Date(dateString).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'UTC',
+        hour12: true
+    }).toUpperCase();
+}
+
+
+
+  async function populateData() {
+    const data = await getEventData("shubham@spicetrade.com", "123456", 26);
+    console.log("data", data);
+
+
+    // object ke ander data extract krne k leye 
+    const { event, faq, banners, registerForms, agendas } = data;
+    // let event = data.event;
+
+    if ($(".main-slider__sub-title").length) {
+      $('.main-slider__sub-title').text(`${event.kind} event`);
+    }
+
+    // debugger;
+    if ($(".main-slider__text".length)) {
+      $('.main-slider__text').html(`${event.description}`);
+    }
+    if ($(".buy-ticket__text".length)) {
+      $('.buy-ticket__text').html(`${event.sectorOverview}`);
+    }
+
+    $(".main-slider__title").text(event.name);
+
+    $(".event-start-end-time").text(`${formateDate(event.startDate)} - ${formateDate(event.endDate)}`);
+
+    if ($(".event-address-p").length) {
+      $(".event-address-p").text(event.address)
+    }
+
+    if ($(".main-slider__img").length) {
+      let bannerImg = "";
+      for (let banner of banners) {
+        if (banner.category == "EVENT_HERO_BANNER_IMG") {
+          bannerImg = banner.file;
+          break;
+        }
+      }
+
+      console.log("banner image", bannerImg);
+      $('.main-slider___img').attr('src', bannerImg);
+    }
+
+    // debugger
+    populateSpeakers(agendas);
+    populateBanners(banners);
+    populateFaq(faq);
+    populateCohort(registerForms);
+    populateForm(registerForms);
+    populateSchedule(agendas,banners);
+    populateEventObjective(event);
+
+  }
+
+  populateData();
+
+  function populateFaq(faq) {
+    if ($(".accrodion-grp").length) {
+      // var accrodionDiv = $('.accrodion').first();
+      for (let i = 0; i < faq.length; i++) {
+        const faqItem = faq[i];
+        // if(!faqItem.isActive) {
+        //   continue;
+        // }
+        let faqClassName = "";
+        if (i % 2 == 0) {
+          faqClassName = "faq-page__left"
+        } else {
+          faqClassName = "faq-page__right"
+        }
+
+        var accordionHTML = `
+                          <div class="accrodion">
+                                <div class="accrodion-title">
+                                    <h4>${faqItem.question}</h4>
+                                    <div class="faq-one-accrodion__count"></div>
+                                </div>
+                                <div class="accrodion-content">
+                                    <div class="inner">
+                                        <p>${faqItem.answer}</p>
+                                    </div><!-- /.inner -->
+                                </div>
+                            </div>
+`;
+        let faqDiv = $(`.${faqClassName} .accrodion-grp`);
+        faqDiv.append(accordionHTML);
+      }
+
+      // Accrodion
+      if ($(".accrodion-grp").length) {
+        var accrodionGrp = $(".accrodion-grp");
+        accrodionGrp.each(function () {
+          var accrodionName = $(this).data("grp-name");
+          var Self = $(this);
+          var accordion = Self.find(".accrodion");
+          Self.addClass(accrodionName);
+          Self.find(".accrodion .accrodion-content").hide();
+          Self.find(".accrodion.active").find(".accrodion-content").show();
+          accordion.each(function () {
+            $(this)
+              .find(".accrodion-title")
+              .on("click", function () {
+                if ($(this).parent().hasClass("active") === false) {
+                  $(".accrodion-grp." + accrodionName)
+                    .find(".accrodion")
+                    .removeClass("active");
+                  $(".accrodion-grp." + accrodionName)
+                    .find(".accrodion")
+                    .find(".accrodion-content")
+                    .slideUp();
+                  $(this).parent().addClass("active");
+                  $(this).parent().find(".accrodion-content").slideDown();
+                }
+              });
+          });
+        });
+      }
+    }
+  }
+
+
+// ========================== speakers ============================================
+
+
+// in this  code speakers ki image repaete ho skti h 
+
+
+  // function populateSpeakers(agendas) {
+  //   for (let i = 0; i < agendas.length; i++) {
+
+  //     const speakers = agendas[i].speakers;
+  //     let speakerListDiv = $(".speaker-list");
+  //     for (let i = 0; i < speakers.length; i++) {
+  //       const speaker = speakers[i];
+  //       // speakers.forEach(speaker => {
+  //       const speakerContent = `
+  //       <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
+  //                   <div class="team-one__single">
+  //                       <div class="team-one__img-box">
+  //                           <div class="team-one__img">
+  //                               <img src="${speaker.photo}" alt="">
+  //                               <div class="team-one__content">
+  //                                   <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</a></h4>
+  //                                   <p class="team-one__sub-title">${speaker.subtitle}
+  //                                   </p>
+  //                               </div>
+  //                               <div class="team-one__content-hover">
+  //                                   <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</a>
+  //                                   </h4>
+  //                                   <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
+  //                                   <p class="team-one__text-hover">${speaker.about}</p>
+  //                               </div>
+  //                           </div>
+  //                       </div>
+  //                   </div>
+  //               </div>
+  //       `;
+
+  //       speakerListDiv.append(speakerContent);
+  //       // })
+  //     }
+  //   }
+  // }
+// -------------------------------------------------------------------------------------------------
+
+
+
+// in this code speakers ki image repate nhi hogi ,  speakers ki image uniquely show hogi 
+
+
+  function populateSpeakers(agendas) {
+    // Create a set to track speakers we've already added
+    const addedSpeakers = new Set();
+    
+    for (let j = 0; j < agendas.length; j++) { // Renamed to 'j' for outer loop
+        const speakers = agendas[j].speakers;
+        let speakerListDiv = $(".speaker-list");
+
+        for (let i = 0; i < speakers.length; i++) {
+            const speaker = speakers[i];
+            
+            // Create a unique identifier for each speaker (could be ID or full name)
+            const speakerIdentifier = `${speaker.firstName}-${speaker.lastName}`;
+
+            // Only append speaker if they haven't been added yet
+            if (!addedSpeakers.has(speakerIdentifier)) {
+                const speakerContent = `
+                    <div class="col-xl-4 col-lg-6 wow fadeInLeft" data-wow-delay="100ms">
+                        <div class="team-one__single">
+                            <div class="team-one__img-box">
+                                <div class="team-one__img">
+                                    <img src="${speaker.photo}" alt="">
+                                    <div class="team-one__content">
+                                        <h4 class="team-one__name">${speaker.firstName} - ${speaker.lastName}</h4>
+                                        <p class="team-one__sub-title">${speaker.subtitle}</p>
+                                    </div>
+                                    <div class="team-one__content-hover">
+                                        <h4 class="team-one__name-hover">${speaker.firstName} - ${speaker.lastName}</h4>
+                                        <p class="team-one__sub-title-hover">${speaker.subtitle}</p>
+                                        <p class="team-one__text-hover">${speaker.about}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Append speaker content
+                speakerListDiv.append(speakerContent);
+
+                // Add speaker to the set to prevent duplication
+                addedSpeakers.add(speakerIdentifier);
+            }
+        }
+    }
+}
 
 
 
 
+
+
+
+
+// ======================================== day 1, day 2, day3 =========================
+
+function populateSchedule(agendas,banners) {
+ const scheduleImage =  banners.filter(it => it.category == 'EVENT_PRESENTATION');
+  
+
+  for (let i = 0; i < agendas.length; i++) {
+      const agenda = agendas[i];
+      const dayTab = `${i + 1}-day`; // Mapping agenda index to day tab
+      let day = `Day ${i + 1}`
+    
+
+    let tabContentUl = $(".tab-buttons");
+    const scheduleLiContent = `
+     <li data-tab ="#${dayTab}" class="tab-btn ">
+                            <h3>${day}</h3>
+                            <p>${formateDate(agenda.startDate)}</p>
+                        </li>
+
+
+    
+    `;
+
+tabContentUl.append(scheduleLiContent);
+
+
+let tabContentDiv = $(".tabs-content");
+const scheduleDivContent = `
+     <div class="tab " id=${dayTab}>
+                            <div class="schedule-one__tab-content-box">
+                                <div class="schedule-one__single">
+                                    <div class="schedule-one__left">
+                                        <h3 class="schedule-one__title">${agenda.title}
+                                            </h3>
+                                        <p class="schedule-one__text">${agenda.description}</p>
+                                    </div>
+                                    <div class="schedule-one__img">
+                                        <img src="${scheduleImage[i] ? scheduleImage[i].file : ''}" alt="">
+                                    </div>
+                                    <div class="schedule-one__address-and-btn-box">
+                                        <ul class="list-unstyled schedule-one__address">
+                                            <li>
+                                                <div class="icon">
+                                                    <span class="icon-clock"></span>
+                                                </div>
+                                                <div class="text">
+                                        <p>${formatTimeTo12Hour(agenda.startDate)} to ${formatTimeTo12Hour(agenda.endDate)}<br>${formateDate(agenda.startDate)}</p>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="icon">
+                                                    <span class="icon-pin"></span>
+                                                </div>
+                                                <div class="text">
+                                                    <p>${agenda.location}</p>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="schedule-one__btn-box">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+`
+
+tabContentDiv.append(scheduleDivContent);
+
+
+
+
+// button ===========================================
+
+      // Append the schedule content to the corresponding tab based on the day
+      // const tabContentDiv = $(`#${dayTab}`);
+      // tabContentDiv.append(scheduleContent);
+  }
+
+
+
+
+  if ($(".tabs-box").length) {
+    $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
+      e.preventDefault();
+      var target = $($(this).attr("data-tab"));
+  debugger
+      if ($(target).is(":visible")) {
+        return false;
+      } else {
+        target
+          .parents(".tabs-box")
+          .find(".tab-buttons")
+          .find(".tab-btn")
+          .removeClass("active-btn");
+        $(this).addClass("active-btn");
+        target
+          .parents(".tabs-box")
+          .find(".tabs-content")
+          .find(".tab")
+          .fadeOut(0);
+        target
+          .parents(".tabs-box")
+          .find(".tabs-content")
+          .find(".tab")
+          .removeClass("active-tab");
+        $(target).fadeIn(300);
+        $(target).addClass("active-tab");
+      }
+    });
+  }
+  
+  
+  
+}
+
+// Example usage with your agendas array
+// populateSchedule(agendas);
+
+
+// event objective=============
+
+function populateEventObjective(event) {
+  
+  let keyObjective  =  event.keyObjectivesJson;     
+
+  let keyObjectiveJson = $(".key-objective-json");
+
+  Object.entries(keyObjective).forEach(([key, value]) => {
+
+    
+
+    const keyObjectives = `
+     <div class="col-xl-4 col-lg-4 wow fadeInLeft" data-wow-delay="100ms">
+                    <div class="services-one__single">
+                        <div class="services-one__icon">
+                            <!-- <span class="icon-camera"></span> -->
+                        </div>
+                        <h3 class="services-one__title">${key}</h3>
+                        <p class="services-one__text">${value}</p>
+                        <!-- <a href="event-prodigy.html" class="services-one__read-more">Read More <span
+                                    class="icon-arrow-right"></span></a> -->
+                    </div>
+                </div>
+    `
+
+
+ 
+    keyObjectiveJson.append(keyObjectives);
+
+  });
+  
+  
+
+}
+
+
+
+
+
+
+
+
+
+
+
+// ===================== BANNERS =========================================
+
+  function populateBanners(banners) {
+    const masonaryLayoutDiv = $(".masonary-vertical-layout");
+    console.log("banners=" ,banners);
+    banners.forEach(banner => {
+      if (banner.category == "EVENT_GALLERY_IMG") {
+        
+        const masonaryContent = `
+      <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="gallery-one__single">
+                        <div class="gallery-one__img">
+                            <img src="${banner.file}" alt="">
+                            <div class="gallery-one__content">
+                                <div class="gallery-one__sub-title-box">
+                                    <div class="gallery-one__sub-title-shape"></div>
+                                    <p class="gallery-one__sub-title">${banner.title}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+      `;
+
+        masonaryLayoutDiv.append(masonaryContent);
+      }
+    });
+    // images overlap ho rhi thi usko fix krne k leye------------------
+    // projectMasonaryLayout();       
+    // 
+  }
+
+
+
+
+  function populateCohort(registerForm) {
+    if ($(".cohort-dropdown-content").length) {
+      let cohortDiv = $(".cohort-dropdown-content");
+      Object.keys(registerForm).forEach(cohort => {
+        let cohortOption = `<a class="thm-btn" href="register.html?id=${cohort}" data-value="${cohort}">${cohort}</a>`;
+        cohortDiv.append(cohortOption)
+      });
+    }
+  }
+
+  // $(".cohort-dropdown-content").ready(function() {
+  //   $('.cohort-dropdown-content').on('change', function() {
+  //     var selectedRole = $(this).val();
+
+  //     if (selectedRole === 'attendee') {
+  //       $('#attendee-section').removeClass('hidden');
+  //       $('#exhibitor-section').addClass('hidden');
+  //     } else if (selectedRole === 'exhibitor') {
+  //       $('#exhibitor-section').removeClass('hidden');
+  //       $('#attendee-section').addClass('hidden');
+  //     } else {
+  //       $('#attendee-section, #exhibitor-section').addClass('hidden');
+  //     }
+  //   });
+  // });
+
+
+  function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function populateForm(registerForm) {
+    const id = getQueryParameter('id'); // Assuming id is passed via query parameter
+    const $form = $('#dynamic-form');
+    $(".reg-header").append(id); // Set title or some element to show ID
+    $form.empty(); // Clear previous fields
+
+    if (id && registerForm[id]) {
+        let sections = {}; // Object to store sections
+
+        registerForm[id].forEach(field => {
+            if (field.isActive == true) {
+                let fieldHtml = '';
+
+                // Create sections dynamically
+                let sectionHeader = field.sectionHeader || "General";
+
+                // If section doesn't exist, create it
+                if (!sections[sectionHeader]) {
+                    sections[sectionHeader] = $(`
+                        <section>
+                            <h2 class="reg-section-header">${sectionHeader}</h2>
+                            <div class="reg-grid"></div>
+                        </section>
+                    `);
+                    $form.append(sections[sectionHeader]);
+                }
+
+                // Label for the field
+                fieldHtml += `<label for="${field.name}" class="reg-label">${field.label} ${field.isRequired ? "<span class='reg-required'>*</span>" : ''}</label>`;
+
+                // Create input fields based on the type (kind)
+                if (field.kind === "TEXT") {
+                    fieldHtml += `<input type="text" id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else if (field.kind === "EMAIL") {
+                    fieldHtml += `<input type="email" id="${field.name}" name="${field.name}" placeholder="${field.placeholder || ''}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else if (field.kind === "RADIO") {
+                    const defaultValue = typeof field.defaultValue == 'string' ? JSON.parse(field.defaultValue) : field.defaultValue;
+                    defaultValue.forEach(option => {
+                        fieldHtml += `
+                            <div class="reg-radio-group">
+                                <input type="radio" id="${option.value}" name="${field.name}" value="${option.value}" class="reg-radio" ${field.isRequired ? "required" : ""}>
+                                <label for="${option.value}" class="reg-label-inline">${option.label}</label>
+                            </div>
+                        `;
+                    });
+                } else if (field.kind === "DATE") {
+                    fieldHtml += `<input type="date" id="${field.name}" name="${field.name}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                } else {
+                  fieldHtml += `<input type="${field.kind.toLowerCase}" id="${field.name}" name="${field.name}" class="reg-input" ${field.isRequired ? "required" : ""}>`;
+                }
+
+                // Append generated field to the section's grid
+                sections[sectionHeader].find('.reg-grid').append(`<div class="reg-grid-item">${fieldHtml}</div>`);
+            }
+        });
+
+        // Append submit button at the end of the form
+        $form.append('<button type="submit" class="reg-button">Submit</button>');
+
+
+      // Add a submit button
+    }
+
+    $('#dynamic-form').on('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const formData = {};
+
+      // Collect all input values dynamically
+      $('#dynamic-form').find('input, select, textarea').each(function () {
+        const $input = $(this);
+        const name = $input.attr('name');
+        const value = $input.val();
+
+        // Handle radio buttons: only add the checked ones
+        if ($input.attr('type') === 'radio') {
+          if ($input.is(':checked')) {
+            formData[name] = value;
+          }
+        } else {
+          formData[name] = value;
+        }
+      });
+      console.log('Collected form data:', formData);
+      alert('Data saved successfully!');
+    });
+  }
 
   // Popular Causes Progress Bar
   if ($(".count-bar").length) {
@@ -75,8 +775,8 @@
         var percent = el.data("percent");
         $(el).css("width", percent).addClass("counted");
       }, {
-        accY: -50
-      }
+      accY: -50
+    }
     );
   }
 
@@ -89,8 +789,8 @@
           $(this).css("width", progressWidth + "%");
         });
       }, {
-        accY: 0
-      }
+      accY: 0
+    }
     );
   }
 
@@ -120,40 +820,12 @@
           });
         }
       }, {
-        accY: 0
-      }
+      accY: 0
+    }
     );
   }
 
-  // Accrodion
-  if ($(".accrodion-grp").length) {
-    var accrodionGrp = $(".accrodion-grp");
-    accrodionGrp.each(function () {
-      var accrodionName = $(this).data("grp-name");
-      var Self = $(this);
-      var accordion = Self.find(".accrodion");
-      Self.addClass(accrodionName);
-      Self.find(".accrodion .accrodion-content").hide();
-      Self.find(".accrodion.active").find(".accrodion-content").show();
-      accordion.each(function () {
-        $(this)
-          .find(".accrodion-title")
-          .on("click", function () {
-            if ($(this).parent().hasClass("active") === false) {
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .removeClass("active");
-              $(".accrodion-grp." + accrodionName)
-                .find(".accrodion")
-                .find(".accrodion-content")
-                .slideUp();
-              $(this).parent().addClass("active");
-              $(this).parent().find(".accrodion-content").slideDown();
-            }
-          });
-      });
-    });
-  }
+
 
 
   if ($(".scroll-to-target").length) {
@@ -161,8 +833,8 @@
       var target = $(this).attr("data-target");
       // animate
       $("html, body").animate({
-          scrollTop: $(target).offset().top
-        },
+        scrollTop: $(target).offset().top
+      },
         1000
       );
 
@@ -460,37 +1132,6 @@
 
 
 
-  if ($(".tabs-box").length) {
-    $(".tabs-box .tab-buttons .tab-btn").on("click", function (e) {
-      e.preventDefault();
-      var target = $($(this).attr("data-tab"));
-
-      if ($(target).is(":visible")) {
-        return false;
-      } else {
-        target
-          .parents(".tabs-box")
-          .find(".tab-buttons")
-          .find(".tab-btn")
-          .removeClass("active-btn");
-        $(this).addClass("active-btn");
-        target
-          .parents(".tabs-box")
-          .find(".tabs-content")
-          .find(".tab")
-          .fadeOut(0);
-        target
-          .parents(".tabs-box")
-          .find(".tabs-content")
-          .find(".tab")
-          .removeClass("active-tab");
-        $(target).fadeIn(300);
-        $(target).addClass("active-tab");
-      }
-    });
-  }
-
-
 
 
 
@@ -557,8 +1198,8 @@
         $("html, body")
           .stop()
           .animate({
-              scrollTop: $(target.attr("href")).offset().top - headerH + "px"
-            },
+            scrollTop: $(target.attr("href")).offset().top - headerH + "px"
+          },
             1200,
             "easeInOutExpo"
           );
@@ -608,7 +1249,7 @@
     }
     thmSwiperInit();
     thmOwlInit();
-    projectMasonaryLayout();
+    // projectMasonaryLayout();
     fullHeight();
 
 
@@ -749,7 +1390,4 @@
 
 
   $('select:not(.ignore)').niceSelect();
-
-
-
 })(jQuery);
